@@ -1,0 +1,146 @@
+/* ==================================
+   DASHBOARD SPECIFIC STYLES
+================================== */
+
+/* Welcome Title */
+#welcome {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #0f172a 0%, #5b6cff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeUp 0.6s ease;
+}
+
+/* Summary Grid */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-light);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.summary-item:hover {
+    background: white;
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.summary-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.summary-item:hover .summary-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.summary-item:nth-child(1) .summary-icon {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+}
+
+.summary-item:nth-child(2) .summary-icon {
+    background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+    color: #9f1239;
+}
+
+.summary-item:nth-child(3) .summary-icon {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+}
+
+.summary-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.summary-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-dark);
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+/* Notification Count Badge */
+#notifCount {
+    background: var(--primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #welcome {
+        font-size: 28px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .summary-item {
+        padding: 16px;
+    }
+
+    .summary-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .summary-value {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    #welcome {
+        font-size: 24px;
+        margin-bottom: 24px;
+    }
+
+    .summary-value {
+        font-size: 24px;
+    }
+
+    .summary-label {
+        font-size: 12px;
+    }
+}

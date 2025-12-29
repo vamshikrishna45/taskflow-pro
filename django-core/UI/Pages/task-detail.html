@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Task Detail</h2>
+<button onclick="goBack()">← Back to Tasks</button>
+
+
+<div class="card">
+    <p><b>Title:</b> <span id="taskTitle"></span></p>
+    <p><b>Description:</b> <span id="taskDescription"></span></p>
+    <p><b>Status:</b> <span id="taskStatus"></span></p>
+    <p><b>Created By:</b> <span id="taskCreatedBy"></span></p>
+    <p><b>Assigned To:</b> <span id="taskAssignedTo"></span></p>
+    <p><b>Deadline:</b> <span id="taskDeadline"></span></p>
+</div>
+
+<div id="assignSection">
+    <input
+        type="text"
+        id="userSearchInput"
+        placeholder="Search user by email"
+        oninput="searchUsers(this.value)"
+    />
+
+    <ul id="userResults"></ul>
+
+    <br>
+    <button id="assignBtn" disabled>Assign</button>
+</div>
+
+<button id="startBtn" onclick="startTask()">Start</button>
+<button id="completeBtn" onclick="completeTask()">Complete</button>
+
+
+<script src="{% static 'JS/task-detail.js' %}"></script>
+
+{% endblock %}

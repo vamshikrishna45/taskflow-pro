@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TaskFlowPro – Create Account</title>
+
+    <link rel="stylesheet" href="/static/CSS/style.css">
+    <link rel="stylesheet" href="/static/CSS/login.css">
+</head>
+
+<body class="login-page">
+
+<div class="login-container">
+
+    <!-- LEFT BRAND SECTION -->
+    <section class="login-brand">
+        <div class="brand-content">
+
+            <img
+                src="/static/Images/TaskFlowPro.png"
+                alt="TaskFlowPro illustration"
+                class="brand-image"
+            />
+
+            <h1 class="brand-title">TaskFlowPro</h1>
+
+            <p class="brand-tagline">
+                Plan smarter.<br>
+                <span>Execute faster.</span>
+            </p>
+
+            <p class="brand-subtext">
+                Create your account and start managing tasks
+                efficiently with your team.
+            </p>
+
+        </div>
+    </section>
+
+    <!-- RIGHT SIGNUP PANEL -->
+    <section class="login-panel">
+
+        <h2>Create account</h2>
+        <p class="subtitle">
+            Get started with TaskFlowPro
+        </p>
+
+        <p id="errorMsg"></p>
+
+       <input id="firstName" placeholder="First name" />
+<input id="lastName" placeholder="Last name" />
+
+
+        <input
+            type="email"
+            id="signupEmail"
+            placeholder="Email address"
+        />
+
+        <input
+            type="password"
+            id="signupPassword"
+            placeholder="Password"
+        />
+
+        <button class="primary" onclick="signupUser()">
+            Create account
+        </button>
+
+        <button class="link" onclick="navigate('login')">
+            ← Back to login
+        </button>
+
+    </section>
+
+</div>
+
+<script src="/static/JS/config.js"></script>
+<script src="/static/JS/auth.js"></script>
+<script src="/static/JS/app.js"></script>
+
+</body>
+</html>

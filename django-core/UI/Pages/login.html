@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlowPro – Login</title>
+
+    <!-- Global styles (optional) -->
+    <link rel="stylesheet" href="/static/CSS/style.css">
+
+    <!-- Login page styles -->
+    <link rel="stylesheet" href="/static/CSS/login.css">
+</head>
+
+<body class="login-page">
+
+<div class="login-container">
+
+    <!-- LEFT: BRAND / PRODUCT -->
+    <section class="login-brand">
+        <div class="brand-content">
+
+            <img
+                src="/static/Images/TaskFlowPro.png"
+                alt="TaskFlowPro illustration"
+                class="brand-image"
+            />
+
+            <h1 class="brand-title">TaskFlowPro</h1>
+
+            <p class="brand-tagline">
+                Plan smarter. Execute faster. Stay in control.
+            </p>
+
+            <p class="brand-subtext">
+                A real-time task management platform built for modern teams.
+            </p>
+
+        </div>
+    </section>
+
+    <!-- RIGHT: LOGIN PANEL -->
+    <section class="login-panel">
+
+        <h2>Welcome back</h2>
+        <p class="subtitle">Log in to your account</p>
+
+        <p id="errorMsg"></p>
+
+        <input type="email" id="loginEmail" placeholder="Email" />
+        <input type="password" id="loginPassword" placeholder="Password" />
+
+        <button class="primary" onclick="loginUser()">Login</button>
+        <button class="secondary" onclick="navigate('signup')">Create account</button>
+        <button class="link" onclick="navigate('forgot-password')">
+            Forgot password?
+        </button>
+
+    </section>
+
+</div>
+
+<!-- Scripts -->
+<script src="/static/JS/config.js"></script>
+<script src="/static/JS/auth.js"></script>
+<script src="/static/JS/app.js"></script>
+
+</body>
+</html>

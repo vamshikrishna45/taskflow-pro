@@ -1,0 +1,61 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<h1 id="welcome">Loading...</h1>
+
+<div class="card">
+    <h3>Summary</h3>
+    <div class="summary-grid">
+        <div class="summary-item">
+            <div class="summary-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+            </div>
+            <div class="summary-content">
+                <span class="summary-label">Tasks Created</span>
+                <span class="summary-value" id="created">-</span>
+            </div>
+        </div>
+
+        <div class="summary-item">
+            <div class="summary-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                </svg>
+            </div>
+            <div class="summary-content">
+                <span class="summary-label">Tasks Assigned</span>
+                <span class="summary-value" id="assigned">-</span>
+            </div>
+        </div>
+
+        <div class="summary-item">
+            <div class="summary-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            </div>
+            <div class="summary-content">
+                <span class="summary-label">Tasks Pending</span>
+                <span class="summary-value" id="pending">-</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>
+        Notifications
+        (<span id="notifCount">0</span>)
+    </h3>
+</div>
+
+{% endblock %}

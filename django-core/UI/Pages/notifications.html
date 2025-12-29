@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Notifications</h2>
+
+<div class="card">
+    <!-- FILTER BAR -->
+    <div class="notif-filters">
+        <!-- Read / Unread -->
+        <select id="filterRead" onchange="applyNotifFilters()">
+            <option value="unread">Unread</option>
+            <option value="all">All</option>
+        </select>
+
+        <!-- Time based -->
+        <select id="filterTime" onchange="applyNotifFilters()">
+            <option value="all">All time</option>
+            <option value="today">Today</option>
+            <option value="7days">Last 7 days</option>
+            <option value="older">Older</option>
+        </select>
+    </div>
+
+    <!-- LIST -->
+    <ul id="notifList" class="notification-list"></ul>
+</div>
+
+<!-- PAGINATION -->
+<div class="pagination" id="notifPagination">
+    <button id="prevNotifBtn" onclick="prevNotifPage()">Prev</button>
+    <span id="notifPageInfo" class="page-info"></span>
+    <button id="nextNotifBtn" onclick="nextNotifPage()">Next</button>
+</div>
+{% endblock %}

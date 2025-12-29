@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<h2>My Profile</h2>
+
+<div class="card">
+    <p>
+        <b>Name:</b>
+        <span id="profileName"></span>
+    </p>
+
+    <p>
+        <b>Email:</b>
+        <span id="profileEmail"></span>
+    </p>
+</div>
+
+<hr>
+
+<h3>Change Password</h3>
+
+<div class="card">
+    <input
+        type="password"
+        id="oldPassword"
+        placeholder="Old Password"
+    />
+    <br><br>
+
+    <input
+        type="password"
+        id="newPassword"
+        placeholder="New Password"
+    />
+    <br><br>
+
+    <button onclick="changePassword()">Change Password</button>
+</div>
+
+{% endblock %}

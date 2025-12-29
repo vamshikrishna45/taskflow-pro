@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TaskFlowPro</title>
+
+    <!-- GLOBAL CSS -->
+    <link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+</head>
+<body>
+
+<div id="app">
+
+    <!-- NAVBAR -->
+  <div class="navbar">
+    <span class="logo">TaskFlowPro</span>
+
+    <a href="/dashboard/" class="{% if request.path == '/dashboard/' %}active{% endif %}">Dashboard</a>
+<a href="/tasks/"
+   class="{% if '/tasks' in request.path or request.path == '/task-detail/' %}active{% endif %}">
+   Tasks
+</a>
+
+<a href="/notifications/" class="{% if request.path == '/notifications/' %}active{% endif %}">
+    Notifications
+    <span id="notifBadge" class="notif-badge"></span>
+</a>
+
+    <a href="/profile/" class="{% if request.path == '/profile/' %}active{% endif %}">Profile</a>
+
+    <button onclick="logout()">Logout</button>
+</div>
+
+    <!-- CONTENT AREA -->
+    <div id="content" class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</div>
+
+<!-- GLOBAL JS -->
+<script src="{% static 'JS/config.js' %}"></script>
+<script src="{% static 'JS/app.js' %}"></script>
+<script src="{% static 'JS/auth.js' %}"></script>
+<script src="{% static 'JS/navbar.js' %}"></script>
+<script src="{% static 'JS/dashboard.js' %}"></script>
+<script src="{% static 'JS/notifications.js' %}"></script>
+<script src="{% static 'JS/tasks.js' %}"></script>
+<script src="{% static 'JS/profile.js' %}"></script>
+
+</body>
+</html>
