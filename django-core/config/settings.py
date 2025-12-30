@@ -47,35 +47,36 @@ REST_FRAMEWORK = {
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env.int("EMAIL_PORT")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
 
-EMAIL_HOST_USER = "krishna64940@gmail.com"
-EMAIL_HOST_PASSWORD = "lexz xhxr oqhr acqe"
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
-DEFAULT_FROM_EMAIL = "TaskFlowPro<krishna64940@gmail.com>"
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+
 
 
 FRONTEND_BASE_URL = os.getenv(
-    "FRONTEND_BASE_URL",
-    "http://127.0.0.1:8000"
+    "FRONTEND_BASE_URL"
 )
 
 
+# Redis settings
+REDIS_HOST = env("REDIS_HOST")
+REDIS_PORT = env.int("REDIS_PORT")
 
-# redis settings
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
 
 # user model setting
 AUTH_USER_MODEL = "users.User"
 
 
 # celery settings 
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_ACCEPT_CONTENT = [env("CELERY_ACCEPT_CONTENT")]
+CELERY_TASK_SERIALIZER = env("CELERY_TASK_SERIALIZER")
+
 
 
 
@@ -136,16 +137,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'taskflow_db',
-        'USER': 'postgres',
-        'PASSWORD': 'vamshi',
-        'HOST': 'localhost',
-        'PORT': '5432',
+    "default": {
+        "ENGINE": env("DB_ENGINE"),
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
     }
 }
-
 
 
 # Password validation
