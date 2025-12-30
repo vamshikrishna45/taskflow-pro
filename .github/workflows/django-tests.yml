@@ -31,6 +31,15 @@ jobs:
           echo "SECRET_KEY=dummy-secret-key-for-ci" >> $GITHUB_ENV
           echo "DEBUG=True" >> $GITHUB_ENV
 
+          # Email (dummy values for CI)
+          echo "EMAIL_BACKEND=django.core.mail.backends.locmem.EmailBackend" >> $GITHUB_ENV
+          echo "EMAIL_HOST=localhost" >> $GITHUB_ENV
+          echo "EMAIL_PORT=587" >> $GITHUB_ENV
+          echo "EMAIL_HOST_USER=dummy@example.com" >> $GITHUB_ENV
+          echo "EMAIL_HOST_PASSWORD=dummy-password" >> $GITHUB_ENV
+          echo "EMAIL_USE_TLS=True" >> $GITHUB_ENV
+
+
       - name: Run Django tests
         working-directory: django-core
         run: |
