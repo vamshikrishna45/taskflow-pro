@@ -28,16 +28,26 @@ jobs:
       # ✅ IMPORTANT: provide required env vars for Django
       - name: Set Django environment variables
         run: |
-          echo "SECRET_KEY=dummy-secret-key-for-ci" >> $GITHUB_ENV
+          # Core
           echo "DEBUG=True" >> $GITHUB_ENV
+          echo "SECRET_KEY=dummy-secret-key-for-ci" >> $GITHUB_ENV
+          echo "FRONTEND_BASE_URL=http://localhost" >> $GITHUB_ENV
 
-          # Email (dummy values for CI)
-          echo "EMAIL_BACKEND=django.core.mail.backends.locmem.EmailBackend" >> $GITHUB_ENV
+          # Email (dummy, safe)
           echo "EMAIL_HOST=localhost" >> $GITHUB_ENV
           echo "EMAIL_PORT=587" >> $GITHUB_ENV
+          echo "EMAIL_USE_TLS=True" >> $GITHUB_ENV
           echo "EMAIL_HOST_USER=dummy@example.com" >> $GITHUB_ENV
           echo "EMAIL_HOST_PASSWORD=dummy-password" >> $GITHUB_ENV
-          echo "EMAIL_USE_TLS=True" >> $GITHUB_ENV
+          echo "DEFAULT_FROM_EMAIL=TaskFlowPro <no-reply@ci.test>" >> $GITHUB_ENV
+
+          # Database (use SQLite for CI)
+          echo "DB_ENGINE=django.db.backends.sqlite3" >> $GITHUB_ENV
+          echo "DB_NAME=db.sqlite3" >> $GITHUB_ENV
+          echo "DB_USER=" >> $GITHUB_ENV
+          echo "DB_PASSWORD=" >> $GITHUB_ENV
+          echo "DB_HOST=" >> $GITHUB_ENV
+          echo "DB_PORT=" >> $GITHUB_ENV
 
 
       - name: Run Django tests
