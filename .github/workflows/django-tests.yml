@@ -25,6 +25,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # ✅ IMPORTANT: provide required env vars for Django
+      - name: Set Django environment variables
+        run: |
+          echo "SECRET_KEY=dummy-secret-key-for-ci" >> $GITHUB_ENV
+          echo "DEBUG=True" >> $GITHUB_ENV
+
       - name: Run Django tests
         working-directory: django-core
         run: |
