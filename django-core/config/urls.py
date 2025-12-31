@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
@@ -49,6 +50,8 @@ urlpatterns = [
     path("api/notifications/", include("notifications.urls")),
     path("api/", include("users.urls")),
     path("api/", include("common.urls")),
+    path("health/", lambda r: HttpResponse("ok"))
+
 ]
 
 # Serve static and media files in development

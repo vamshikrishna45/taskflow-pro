@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  web:
+    build: ./django-core
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    env_file:
+      - ./django-core/.env
+    volumes:
+      - static_data:/app/staticfiles
+      - media_data:/app/media
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    build: ./django-core
+    command: celery -A config worker -l info
+    env_file:
+      - ./django-core/.env
+    depends_on:
+      - redis
+      - db
+
+  nginx:
+    image: nginx:1.25
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - static_data:/staticfiles
+      - media_data:/media
+    depends_on:
+      - web
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: taskflow_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: strongpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+
+volumes:
+  postgres_data:
+  static_data:
+  media_data:
