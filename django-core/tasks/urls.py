@@ -4,8 +4,10 @@ from .views import (
     TaskCompleteView,
     TaskCreateView,
     TaskDeleteView,
+    TaskDescriptionEnhanceView,
     TaskListView,
     TaskDetailView,
+    TaskPrioritySuggestView,
     TaskStartView,
     TaskUpdateView,
 )
@@ -20,6 +22,13 @@ urlpatterns = [
     path("tasks/<int:pk>/start/", TaskStartView.as_view()),
     path("tasks/<int:pk>/complete/", TaskCompleteView.as_view()),
     path("tasks/<int:pk>/delete/", TaskDeleteView.as_view()),
+    path("tasks/suggest-priority/", TaskPrioritySuggestView.as_view()),
+
+      path(
+        "tasks/enhance-description/",
+        TaskDescriptionEnhanceView.as_view()
+    ),
+
 
 ]
 

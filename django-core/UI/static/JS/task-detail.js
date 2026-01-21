@@ -60,6 +60,7 @@ function loadTaskDetail() {
         document.getElementById("taskTitle").innerText = task.title;
         document.getElementById("taskDescription").innerText = task.description || "-";
         document.getElementById("taskStatus").innerText = task.status;
+        document.getElementById("taskPriority").innerText = task.priority || "-"; // NEW
         document.getElementById("taskCreatedBy").innerText = task.created_by;
         document.getElementById("taskAssignedTo").innerText = task.assigned_to || "-";
         document.getElementById("taskDeadline").innerText = task.deadline || "-";

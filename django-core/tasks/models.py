@@ -17,6 +17,12 @@ class TaskStatus(models.TextChoices):
     DONE = "DONE", "Done"
 
 
+class TaskPriority(models.TextChoices):
+    LOW = "LOW", "Low"
+    MEDIUM = "MEDIUM", "Medium"
+    HIGH = "HIGH", "High"
+
+
 class Task(models.Model):
     """
     Core task entity.
@@ -32,6 +38,13 @@ class Task(models.Model):
         blank=True,
         help_text="Optional detailed description"
     )
+
+    priority = models.CharField(
+    max_length=10,
+    choices=TaskPriority.choices,
+    default=TaskPriority.MEDIUM
+)
+
 
     status = models.CharField(
         max_length=20,
@@ -130,5 +143,8 @@ class Task(models.Model):
             "completed_by": by_user.id,
         }
     )
+
+
+
 
 

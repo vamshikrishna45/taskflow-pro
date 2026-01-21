@@ -3,7 +3,8 @@ version: "3.9"
 services:
   web:
     build: ./django-core
-    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    working_dir: /app
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile - --error-logfile -
     env_file:
       - ./django-core/.env
     volumes:
@@ -28,8 +29,8 @@ services:
       - "80:80"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - static_data:/staticfiles
-      - media_data:/media
+      - static_data:/app/staticfiles
+      - media_data:/app/media
     depends_on:
       - web
 
@@ -38,14 +39,63 @@ services:
     environment:
       POSTGRES_DB: taskflow_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: strongpassword
+      POSTGRES_PASSWORD: vamshi
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  grafana:
+    image: grafana/grafana:latest
+    container_name: taskflow-pro-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus
+    container_name: taskflow-pro-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: taskflow-pro-node-exporter
+    volumes:
+      - /:/host:ro,rslave
+    command:
+      - '--path.rootfs=/host'
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:2.9.3
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: taskflow-pro-promtail-1
+    volumes:
+      - ./promtail/config.yml:/etc/promtail/config.yml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+
+
+
   redis:
     image: redis:7
+
 
 volumes:
   postgres_data:
   static_data:
   media_data:
+  grafana_data:
