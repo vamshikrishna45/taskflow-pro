@@ -108,6 +108,10 @@ def login_view(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
+    print("Email received:", email)
+    print("Password received:", password)
+    print("----------------------------------")
+
     user = authenticate(username=email, password=password)
 
     if not user:

@@ -26,13 +26,17 @@ function loginUser() {
         return;
     }
 
-    fetch(`${API_BASE}/auth/token/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-    })
+    fetch(`${API_BASE}/token/`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        email: email,
+        password: password
+    }),
+})
+
     .then(async response => {
         const data = await response.json();
 

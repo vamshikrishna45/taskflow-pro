@@ -28,6 +28,8 @@ function applyFilters() {
     const status = document.getElementById("filterStatus").value;
     const taskId = document.getElementById("filterTaskId").value.trim();
     const unassigned = document.getElementById("filterUnassigned").checked;
+    const priority = document.getElementById('filterPriority').value; // NEW
+
 
     if (taskId) {
         const id = taskId.replace("TFP-", "");
@@ -38,6 +40,10 @@ function applyFilters() {
         filtered = filtered.filter(
             t => t.assigned_to && t.assigned_to.toLowerCase().includes(assignee)
         );
+    }
+
+      if (priority) {
+        filtered = filtered.filter(t => t.priority === priority);
     }
 
     if (status) {
@@ -58,6 +64,8 @@ function clearFilters() {
     document.getElementById("filterStatus").value = "";
     document.getElementById("filterTaskId").value = "";
     document.getElementById("filterUnassigned").checked = false;
+    document.getElementById('filterPriority').value = ''; // NEW
+
 
     renderTaskTable(allTasks);
 }
@@ -141,6 +149,7 @@ function renderTaskTable(tasks) {
             <td><strong>TFP-${task.id}</strong></td>
             <td>${task.title}</td>
             <td>${task.assigned_to || "—"}</td>
+            <td>${task.priority || '-'}</td> <!-- NEW -->
             <td>${task.status}</td>
             <td>
                 <button onclick="viewTask(${task.id})">View</button>
@@ -218,6 +227,8 @@ function submitTask() {
     const title = document.getElementById("taskTitle").value.trim();
     const description = document.getElementById("taskDescription").value.trim();
     const deadline = document.getElementById("taskDeadline").value;
+    const priority = document.getElementById("taskPriority").value || null;
+
 
     if (!title) {
         alert("Title is required");
@@ -233,7 +244,8 @@ function submitTask() {
         body: JSON.stringify({
             title,
             description,
-            deadline: deadline || null
+            deadline: deadline || null,
+            priority
         })
     })
     .then(res => res.json())
@@ -248,3 +260,87 @@ function resetTaskModal() {
     document.getElementById("taskDescription").value = "";
     document.getElementById("taskDeadline").value = "";
 }
+
+
+
+let prioritySuggestTimer = null;
+
+function debouncePrioritySuggest() {
+    clearTimeout(prioritySuggestTimer);
+    prioritySuggestTimer = setTimeout(fetchPrioritySuggestion, 700);
+}
+
+function fetchPrioritySuggestion() {
+    const title = document.getElementById("taskTitle").value.trim();
+    const description = document.getElementById("taskDescription").value.trim();
+
+    if (!title) {
+        document.getElementById("priorityHint").innerText =
+            "🤖 AI suggestion will appear here";
+        return;
+    }
+
+    fetch(`${API_BASE}/tasks/suggest-priority/`, {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("access_token"),
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ title, description })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.suggested_priority) {
+            document.getElementById("priorityHint").innerText =
+                `🤖 AI suggests: ${data.suggested_priority} priority`;
+        }
+    })
+    .catch(() => {
+        document.getElementById("priorityHint").innerText =
+            "🤖 AI suggestion unavailable";
+    });
+}
+
+
+
+function enhanceDescription() {
+    const textarea = document.getElementById("taskDescription");
+    const description = textarea.value.trim();
+
+    if (!description) {
+        alert("Please enter a description first");
+        return;
+    }
+
+    textarea.disabled = true;
+    textarea.value = "✨ Enhancing description with AI...";
+
+    fetch(`${API_BASE}/tasks/enhance-description/`, {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("access_token"),
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ description })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.enhanced_description) {
+            textarea.value = data.enhanced_description;
+        } else {
+            textarea.value = description;
+        }
+    })
+    .catch(() => {
+        textarea.value = description;
+        alert("AI enhancement failed");
+    })
+    .finally(() => {
+        textarea.disabled = false;
+    });
+}
+
+
+/*********************************
+ * END OF FILE
+ *********************************/

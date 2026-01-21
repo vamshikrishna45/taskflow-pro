@@ -25,14 +25,59 @@ from notifications.tasks import create_notification
 User = get_user_model()
 
 
+from .ai_models.priority_suggest import suggest_priority
+
+
+from .ai_models.enhance_description import enhance_description
+
+
+class TaskDescriptionEnhanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        description = request.data.get("description", "").strip()
+
+        if not description:
+            return Response(
+                {"error": "Description is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        enhanced = enhance_description(description)
+
+        return Response({
+            "enhanced_description": enhanced
+        })
 
 class TaskCreateView(CreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        serializer.save(
+            created_by=self.request.user
+        )
 
+
+
+class TaskPrioritySuggestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        title = request.data.get("title", "")
+        description = request.data.get("description", "")
+
+        if not title:
+            return Response(
+                {"error": "Title required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        priority = suggest_priority(title, description)
+
+        return Response({
+            "suggested_priority": priority
+        })
 
 
 
@@ -142,6 +187,12 @@ class TaskListView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Task.objects.filter(
-            Q(created_by=user) | Q(assigned_to=user)
-        ).distinct()
+        queryset = Task.objects.filter(
+        Q(created_by=user) | Q(assigned_to=user)
+          ).distinct()
+    
+        priority = self.request.query_params.get('priority')
+        if priority:
+            queryset = queryset.filter(priority=priority)
+    
+        return queryset
