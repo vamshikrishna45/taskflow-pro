@@ -34,15 +34,6 @@ services:
     depends_on:
       - web
 
-  db:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: taskflow_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: vamshi
-
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
   grafana:
     image: grafana/grafana:latest
