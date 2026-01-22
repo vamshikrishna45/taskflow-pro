@@ -12,17 +12,14 @@ jobs:
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_KEY }}
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USER }}
           port: 22
-          key_path: /tmp/ssh_key
-          envs: SSH_PRIVATE_KEY
+          key: ${{ secrets.AWS_SSH_KEY }}
           script: |
             cd taskflow-pro
             git pull origin main
             docker compose pull
             docker compose up -d --build
-            docker compose exec web python manage.py migrate
+            docker compose exec -T web python manage.py migrate
