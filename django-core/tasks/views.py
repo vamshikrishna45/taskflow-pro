@@ -188,8 +188,8 @@ class TaskListView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         queryset = Task.objects.filter(
-        Q(created_by=user) | Q(assigned_to=user)
-          ).distinct()
+            Q(created_by=user) | Q(assigned_to=user)
+        ).distinct().order_by('-id')  # ← ADD THIS
     
         priority = self.request.query_params.get('priority')
         if priority:
