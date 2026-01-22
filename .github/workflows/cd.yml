@@ -10,19 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code (for metadata only)
-        uses: actions/checkout@v4
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_KEY }}
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USER }}
-          key: ${{ secrets.AWS_SSH_KEY }}
+          port: 22
+          key_path: /tmp/ssh_key
+          envs: SSH_PRIVATE_KEY
           script: |
             cd taskflow-pro
             git pull origin main
             docker compose pull
             docker compose up -d --build
             docker compose exec web python manage.py migrate
-
