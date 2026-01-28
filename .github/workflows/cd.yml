@@ -18,8 +18,14 @@ jobs:
           port: 22
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
-            cd taskflow-pro
-            git pull origin main
-            docker compose pull
-            docker compose up -d --build
-            docker compose exec -T web python manage.py migrate
+             cd taskflow-pro
+             git fetch origin
+             git reset --hard origin/main
+             git clean -fd
+             docker compose pull
+             docker compose up -d --build --force-recreate
+             docker compose exec -T web python manage.py collectstatic --noinput
+             docker compose exec -T web python manage.py migrate
+
+
+             

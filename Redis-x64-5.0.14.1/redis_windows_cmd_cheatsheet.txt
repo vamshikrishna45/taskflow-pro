@@ -1,0 +1,90 @@
+
+REDIS WINDOWS CMD CHEAT SHEET
+============================
+
+START / STOP
+------------
+Start Redis (default port 6379):
+redis-server.exe
+
+Start Redis (custom port 6380):
+redis-server.exe --port 6380
+
+Stop Redis (foreground):
+Ctrl + C
+
+Force stop Redis:
+taskkill /IM redis-server.exe /F
+
+
+CONNECT / CHECK
+---------------
+Connect to Redis (default):
+redis-cli.exe
+
+Connect to Redis (port 6380):
+redis-cli.exe -p 6380
+
+Check if Redis is running:
+PING
+Expected output: PONG
+
+
+BASIC DATA COMMANDS
+-------------------
+Set a key:
+SET key value
+
+Get a key:
+GET key
+
+Delete a key:
+DEL key
+
+List all keys:
+KEYS *
+
+Clear all data (DEV ONLY):
+FLUSHALL
+
+
+PUB / SUB (USED IN YOUR PROJECT)
+-------------------------------
+Subscribe to channel:
+SUBSCRIBE task_events
+
+Publish message:
+PUBLISH task_events "hello"
+
+
+INFO & DEBUG
+------------
+Server info:
+INFO
+
+Memory info:
+INFO memory
+
+Client info:
+INFO clients
+
+Check Redis port:
+INFO server
+
+
+PORT CHECK (WINDOWS)
+--------------------
+Check if port is in use:
+netstat -ano | findstr :6380
+
+
+DAILY DEV FLOW
+--------------
+1. Start Redis:
+   redis-server.exe --port 6380
+
+2. Open new CMD:
+   redis-cli.exe -p 6380
+   PING
+
+3. Start Django

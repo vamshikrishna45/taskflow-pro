@@ -1,245 +1,222 @@
-# 🚀 TaskFlow Pro
+# TaskFlow Pro
 
-**Real-Time Task Management Backend — Clean, Scalable, Production-Oriented**
+### A Real-Time, Event-Driven Task Management Platform
 
-TaskFlow Pro is a **real-world backend system** built to manage tasks for teams with **instant notifications**, **high performance**, and **clean architecture**.
+TaskFlow Pro is a production-oriented, event-driven task management system designed to demonstrate modern backend and frontend architecture patterns used in real-world applications.
 
-This project goes beyond simple CRUD APIs and demonstrates **how modern backend systems are designed in production**.
-
----
-
-## 📌 What This Project Does
-
-TaskFlow Pro enables users to:
-
-- Create and manage tasks
-- Assign tasks to other users
-- Track task status and deadlines
-- Receive **real-time notifications**
-- Process background jobs without blocking APIs
-
-The primary focus is **architecture clarity, scalability, and responsiveness**.
+The platform emphasizes **scalability, separation of concerns, real-time communication, background processing, and responsible AI integration**, rather than simple CRUD functionality.
 
 ---
 
-## ❓ Why This Project Exists
+## Overview
 
-In real applications:
+TaskFlow Pro enables teams to manage tasks efficiently with real-time updates and non-blocking operations.
 
-- Users expect **fast APIs**
-- Notifications must be **instant**
-- Slow operations (emails, reminders) should **never block requests**
-- Monolithic backends become hard to maintain as features grow
+Core capabilities include:
 
-**TaskFlow Pro solves this by:**
-
-- Separating responsibilities cleanly
-- Using event-driven communication
-- Offloading slow work to background workers
-- Keeping data ownership strict and clear
-
----
-
-## 🧠 High-Level Idea (One Line)
-
-> **Django handles business logic and data, FastAPI delivers real-time updates, Redis connects services, and Celery runs background tasks.**
-
----
-
-## 🛠️ Tech Stack & Rationale
-
-### 🔹 Backend Frameworks
-
-| Tool | Why It’s Used |
-|----|--------------|
-| **Django + DRF** | Core APIs, authentication, data integrity |
-| **FastAPI** | High-performance real-time WebSocket notifications |
-
-- **Django = Brain**
-- **FastAPI = Messenger**
-
----
-
-### 🔹 Supporting Infrastructure
-
-| Tool | Purpose |
-|----|--------|
-| **PostgreSQL** | Primary relational database |
-| **Redis** | Event messaging & lightweight caching |
-| **Celery** | Background processing (emails, reminders) |
-| **NGINX** | API gateway & request routing |
-| **Docker** | Consistent multi-service environment |
-
-Each tool is used only where it makes **practical sense**.
-
----
-
-## 🔍 Clear Responsibility Split
-
-### 🟦 Django (Core Backend)
-
-Handles:
-- User authentication (JWT)
-- Task creation & updates
-- Assigning tasks
-- Business rules & validation
-- Database writes
-
-📌 **Single source of truth**  
-📌 Only service allowed to modify task data
-
----
-
-### 🟩 FastAPI (Realtime Service)
-
-Handles:
-- WebSocket connections
+- Task creation, updates, and assignment
+- Status and deadline tracking
 - Real-time notifications
-- Deadline alerts
-- Async high-concurrency delivery
+- Asynchronous background processing
+- AI-assisted task description enhancement
+- Automated (optional) priority suggestions
 
-📌 Never writes to the database  
-📌 Reacts only to events
-
----
-
-### 🔴 Redis (Event Bridge)
-
-Used for:
-- Publishing task-related events
-- Allowing FastAPI & Celery to react instantly
-
-📌 No permanent storage  
-📌 Lightweight and fast
+The system is intentionally designed to reflect **industry-grade architecture decisions** commonly seen in scalable backend systems.
 
 ---
 
-### 🔵 Celery (Background Workers)
+## Design Goals
+
+- Fast, non-blocking APIs
+- Clear ownership of data and business logic
+- Real-time communication without polling
+- Decoupled services with minimal tight coupling
+- AI used as an assistant, not an authority
+- Easy local and production deployment
+- Maintainable and extensible codebase
+
+---
+
+## High-Level Architecture
+
+TaskFlow Pro follows a layered, event-driven architecture:
+
+- **Django** owns business logic and data integrity
+- **Redis** distributes events between services
+- **Celery** executes background jobs
+- **FastAPI** delivers real-time notifications
+- **Next.js** provides a modern, scalable user interface
+- **AI services** enhance user input without altering system authority
+
+---
+
+## Technology Stack
+
+### Frontend
+
+| Technology | Responsibility                   |
+| ---------- | -------------------------------- |
+| Next.js 14 | User interface, routing, layouts |
+| TypeScript | Type-safe frontend development   |
+| WebSockets | Real-time UI updates             |
+
+### Backend
+
+| Component    | Responsibility                                          |
+| ------------ | ------------------------------------------------------- |
+| Django + DRF | Core APIs, authentication, validation, data persistence |
+| FastAPI      | WebSocket-based real-time notifications                 |
+| PostgreSQL   | Primary relational database                             |
+| Redis        | Event messaging and lightweight caching                 |
+| Celery       | Background task execution                               |
+| NGINX        | Reverse proxy and API gateway                           |
+| Docker       | Multi-service orchestration                             |
+
+Each technology is used only where it provides **clear architectural value**.
+
+---
+
+## Service Responsibilities
+
+### Django (Core Backend)
+
+Responsible for:
+
+- User authentication (JWT)
+- Task lifecycle management
+- Business rules and validation
+- Database persistence
+- Coordinating AI-assisted features
+
+Django is the **single source of truth** for all task data.
+
+---
+
+### FastAPI (Real-Time Service)
+
+Responsible for:
+
+- Managing WebSocket connections
+- Delivering instant notifications
+- Handling high-concurrency async communication
+
+FastAPI **never writes to the database** and reacts only to published events.
+
+---
+
+### Redis (Event Bus)
+
+Used as:
+
+- An event bridge between services
+- A low-latency messaging layer
+
+Redis stores **no permanent data** and is used only for transient communication.
+
+---
+
+### Celery (Background Workers)
 
 Handles:
+
 - Email notifications
 - Deadline reminders
-- Retry logic for failures
+- Retry logic for transient failures
 
-📌 Keeps APIs fast  
-📌 Runs silently in the background
-
----
-
-## 🏗️ Architecture Overview
-
-### Request Flow
-
-User
-↓
-Single API URL
-↓
-NGINX (Gateway)
-├─ /api → Django (Core APIs)
-└─ /ws → FastAPI (WebSockets)
-
-yaml
-Copy code
-
-👉 Internal services are completely hidden from the client.
+This ensures API responses remain fast and non-blocking.
 
 ---
 
-## ✅ Functional Requirements
+## Request Flow
 
-### 👤 User Management
-- User registration & login
-- JWT-based authentication
+Client
+↓
+NGINX (Single Entry Point)
+├── /api → Django (REST APIs)
+└── /ws → FastAPI (WebSockets)
 
-### 📝 Task Management
-- Create tasks
-- Update tasks
-- Assign tasks
-- Change task status
-- Set deadlines
+Internal services are never exposed directly to clients.
 
-### 🔔 Notifications
-Users are notified when:
+---
+
+## AI-Powered Features
+
+### Task Description Enhancement (LLM-Based)
+
+When a user creates or edits a task, the system can optionally:
+
+- Improve grammar and clarity
+- Preserve original intent and meaning
+- Allow the user to accept or ignore suggestions
+
+**Model**
+
+- Groq-hosted LLM
+- `llama-3.3-70b-versatile`
+
+**Design Principles**
+
+- Safe synchronous execution
+- Failure does not affect task creation
+- AI suggestions never overwrite user intent
+
+---
+
+### Priority Suggestion (Lightweight NLP)
+
+The system can suggest task priority based on wording and urgency cues.
+
+**Signals**
+
+- Urgent language → High
+- Neutral wording → Medium
+- Casual or optional wording → Low
+
+**Model**
+
+- Hugging Face Inference API
+- `distilbert-base-uncased-finetuned-sst-2-english`
+
+**Key Rule**
+
+- Priority is a suggestion only
+- Users can override at any time
+
+---
+
+## Notifications
+
+Users receive notifications when:
+
 - A task is assigned
 - Task status changes
 - A deadline is approaching
 
 Notifications are:
-- Delivered via **WebSockets**
-- Stored as **read/unread records**
+
+- Delivered in real time via WebSockets
+- Persisted as read/unread records
+- Processed asynchronously where required
 
 ---
 
-## ⚙️ Non-Functional Requirements
+## Non-Functional Characteristics
 
-| Requirement | Description |
-|-----------|------------|
-| Performance | Fast API responses |
-| Scalability | Handles many concurrent users |
-| Reliability | Background retries via Celery |
-| Maintainability | Clean separation of concerns |
-| Security | JWT authentication & permissions |
-
----
-
-## 🔁 Event Flow Example (Task Assignment)
-
-1. Manager assigns task (Django)
-2. Task saved to PostgreSQL
-3. Django publishes event to Redis
-4. FastAPI receives event
-5. WebSocket notification sent
-6. Celery sends email notification (optional)
+| Aspect          | Implementation                    |
+| --------------- | --------------------------------- |
+| Performance     | Async APIs and background workers |
+| Scalability     | Stateless services with Redis     |
+| Reliability     | Task retries and isolation        |
+| Maintainability | Clear service boundaries          |
+| Security        | JWT-based authentication          |
 
 ---
 
-## 🗄️ Database Design
-
-### Tables
-
-**User**
-- id
-- name
-- email
-
-**Task**
-- id
-- title
-- status
-- deadline
-- assigned_to
-
-**Notification**
-- id
-- user
-- message
-- is_read
-- created_at
-
----
-
-## 🌐 API Overview
-
-### Django REST APIs
-POST /api/tasks
-GET /api/tasks
-PATCH /api/tasks/{id}
-
-shell
-Copy code
-
-### FastAPI APIs
-WS /ws/notifications
-POST /notify/deadline
-
-yaml
-Copy code
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 taskflow-pro/
+│
+├── frontend/ # Next.js UI
 │
 ├── gateway/
 │ └── nginx.conf
@@ -253,33 +230,21 @@ taskflow-pro/
 ├── fastapi-realtime/
 │ ├── main.py
 │ ├── websocket/
-│ ├── events/
-│ └── workers/
+│ └── events/
 │
 ├── docker-compose.yml
 └── README.md
 
-markdown
-Copy code
-
 ---
 
-## 🧾 Resume Highlights
+## Summary
 
-- Designed and built a **real-time task management backend** using Django and FastAPI
-- Implemented **WebSocket-based notifications** for instant updates
-- Used **Redis for event-driven communication** between services
-- Integrated **Celery for background processing** of emails and reminders
-- Created a **scalable, maintainable backend architecture** using Docker
+TaskFlow Pro demonstrates:
 
----
+- Clean separation of concerns
+- Event-driven backend design
+- Real-time communication at scale
+- Responsible, assistive AI integration
+- Production-ready architecture patterns
 
-## 🏁 Final Summary
-
-- **Django** → decides & updates data  
-- **Redis** → broadcasts events  
-- **Celery** → handles background work  
-- **FastAPI** → delivers instant updates  
-- **PostgreSQL** → stores everything  
-
-> **TaskFlow Pro demonstrates how modern backend systems are designed — clean, scalable, and real-time.**
+This project is designed to reflect **how modern systems are built and reasoned about**, not just how APIs are written.

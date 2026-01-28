@@ -17,18 +17,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # Public pages - standalone full HTML pages
-    path("", TemplateView.as_view(template_name="login.html")),
-    path("login/", TemplateView.as_view(template_name="login.html")),
-    path("signup/", TemplateView.as_view(template_name="signup.html")),
-    path("forgot-password/", TemplateView.as_view(template_name="forgot-password.html")),
+    # # Public pages - standalone full HTML pages
+    # path("", TemplateView.as_view(template_name="login.html")),
+    # path("login/", TemplateView.as_view(template_name="login.html")),
+    # path("signup/", TemplateView.as_view(template_name="signup.html")),
+    # path("forgot-password/", TemplateView.as_view(template_name="forgot-password.html")),
 
-    # Authenticated area - all use the same layout (index.html) with navbar
-    path("dashboard/", TemplateView.as_view(template_name="dashboard.html")),
-    path("tasks/", TemplateView.as_view(template_name="tasks.html")),
-    path("task-detail/", TemplateView.as_view(template_name="task-detail.html")),  # ✅ ADD THIS
-    path("notifications/", TemplateView.as_view(template_name="notifications.html")),
-    path("profile/", TemplateView.as_view(template_name="profile.html")),
+    # # Authenticated area - all use the same layout (index.html) with navbar
+    # path("dashboard/", TemplateView.as_view(template_name="dashboard.html")),
+    # path("tasks/", TemplateView.as_view(template_name="tasks.html")),
+    # path("task-detail/", TemplateView.as_view(template_name="task-detail.html")),  # ✅ ADD THIS
+    # path("notifications/", TemplateView.as_view(template_name="notifications.html")),
+    # path("profile/", TemplateView.as_view(template_name="profile.html")),
   
 
 
@@ -36,7 +36,7 @@ urlpatterns = [
 
     # Your app APIs
     path("api/", include("tasks.urls")),
-    path("api/notifications/", include("notifications.urls")),
+    path("api/", include("notifications.urls")),
     path("api/", include("users.urls")),
     path("api/", include("common.urls")),
     path("health/", lambda r: HttpResponse("ok")),

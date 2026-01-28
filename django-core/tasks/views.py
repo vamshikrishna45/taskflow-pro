@@ -108,24 +108,43 @@ class TaskUpdateView(UpdateAPIView):
     permission_classes = [IsAuthenticated, IsTaskCreatorOrAssignee]
 
 
-
 class TaskAssignView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
-        user = get_object_or_404(User, id=request.data["user_id"])
+        
+        # Only creator can assign
+        if task.created_by != request.user:
+            return Response(
+                {"error": "Only the task creator can assign this task"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Only TODO tasks can be assigned
+        if task.status != "TODO":
+            return Response(
+                {"error": "Only TODO tasks can be assigned"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Task must not be already assigned
+        if task.assigned_to:
+            return Response(
+                {"error": "Task is already assigned"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Assign task
+        user = get_object_or_404(User, id=request.data.get("user_id"))
+
         task.assign_to(user, request.user)
 
-        # ✅ CREATE NOTIFICATION
         create_notification.delay(
-    user.id,
-    f"{request.user.email} assigned you the task '{task.title}'"
-)
+            user.id,
+            f"{request.user.email} assigned you the task '{task.title}'"
+        )
 
-        return Response({"message": "Assigned"}, status=status.HTTP_200_OK)
+        return Response({"message": "Task assigned successfully"}, status=status.HTTP_200_OK)
 
 
 class TaskStartView(APIView):
@@ -133,20 +152,30 @@ class TaskStartView(APIView):
 
     def post(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
+        
+        # Only assignee can start
+        if task.assigned_to != request.user:
+            return Response(
+                {"error": "Only the assigned user can start this task"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Only TODO tasks can be started
+        if task.status != "TODO":
+            return Response(
+                {"error": "Task is not in TODO status"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         task.start(by_user=request.user)
 
-     # 🔔 Notify creator (if not same user)
         if task.created_by != request.user:
             create_notification.delay(
                 task.created_by.id,
                 f"{request.user.email} started the task '{task.title}'"
             )
 
-        return Response(
-            {"message": "Task started"},
-            status=status.HTTP_200_OK
-        )
-
+        return Response({"message": "Task started successfully"})
 
 
 class TaskCompleteView(APIView):
@@ -154,19 +183,30 @@ class TaskCompleteView(APIView):
 
     def post(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
+        
+        # Only assignee can complete
+        if task.assigned_to != request.user:
+            return Response(
+                {"error": "Only the assigned user can complete this task"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Only IN_PROGRESS tasks can be completed
+        if task.status != "IN_PROGRESS":
+            return Response(
+                {"error": "Task must be in IN_PROGRESS status to complete"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         task.complete(request.user)
 
-         # 🔔 Notify creator (if not same user)
         if task.created_by != request.user:
             create_notification.delay(
                 task.created_by.id,
                 f"{request.user.email} completed the task '{task.title}'"
             )
 
-        return Response({"message": "Completed"})
-    
-        
-
+        return Response({"message": "Task completed successfully"})
 
 
 from rest_framework.generics import DestroyAPIView

@@ -9,10 +9,15 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from .serializers import EmailTokenObtainPairSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView
-from .serializers import UserSerializer
+from django.db import IntegrityError
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from .serializers import EmailTokenObtainPairSerializer, UserSerializer
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -36,44 +41,29 @@ def generate_jwt(user):
     return token
 
 
-from django.db import IntegrityError
-
-@csrf_exempt
-def signup_view(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "Invalid method"}, status=405)
-
-    try:
-        data = json.loads(request.body)
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON"}, status=400)
-
-    email = data.get("email")
-    password = data.get("password")
-    first_name = data.get("first_name")
-    last_name = data.get("last_name")
-
-    if not email or not password:
-        return JsonResponse(
-            {"error": "Email and password are required"},
-            status=400
-        )
-    
-    if not first_name or not last_name:
-        return JsonResponse(
-        {"error": "First name and last name are required"},
-        status=400
-    )
 
 
-    # ✅ Check email properly
-    if User.objects.filter(email=email).exists():
-        return JsonResponse(
-            {"error": "Email already in use"},
-            status=400
-        )
+class SignupAPIView(APIView):
+    permission_classes = [AllowAny]
 
-    try:
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+        first_name = request.data.get("first_name")
+        last_name = request.data.get("last_name")
+
+        if not all([email, password, first_name, last_name]):
+            return Response(
+                {"error": "All fields are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if User.objects.filter(email=email).exists():
+            return Response(
+                {"error": "Email already exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         user = User.objects.create_user(
             username=email,
             email=email,
@@ -81,17 +71,11 @@ def signup_view(request):
             first_name=first_name,
             last_name=last_name
         )
-    except IntegrityError:
-        return JsonResponse(
-            {"error": "Email already in use"},
-            status=400
+
+        return Response(
+            {"message": "Signup successful"},
+            status=status.HTTP_201_CREATED
         )
-
-    return JsonResponse(
-        {"message": "Signup successful"},
-        status=201
-    )
-
 
 
 @csrf_exempt
@@ -131,7 +115,6 @@ def login_view(request):
 
 
 
-
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -144,29 +127,34 @@ class ProfileView(APIView):
             "last_name": user.last_name,
         })
 
-
-
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         user = request.user
+
         old_password = request.data.get("old_password")
         new_password = request.data.get("new_password")
 
+        if not old_password or not new_password:
+            return Response(
+                {"error": "Both passwords are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         if not user.check_password(old_password):
             return Response(
-                {"error": "Old password is incorrect"},
+                {"error": "Old password incorrect"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         user.set_password(new_password)
         user.save()
 
-        return Response({"message": "Password changed successfully"})
+        return Response({"message": "Password updated"})
 
-
-
+class EmailTokenObtainPairView(TokenObtainPairView):
+    serializer_class = EmailTokenObtainPairSerializer
 
 
 class UserListView(ListAPIView):
@@ -227,7 +215,7 @@ def forgot_password_view(request):
 
         reset_link = (
             f"{settings.FRONTEND_BASE_URL}"
-            f"/reset-password/?token={token}"
+            f"/auth/reset-password/?token={token}"
         )
 
         # async email via Celery

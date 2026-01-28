@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   web:
     build: ./django-core
@@ -11,7 +9,6 @@ services:
       - static_data:/app/staticfiles
       - media_data:/app/media
     depends_on:
-      - db
       - redis
 
   celery:
@@ -21,7 +18,6 @@ services:
       - ./django-core/.env
     depends_on:
       - redis
-      - db
 
   nginx:
     image: nginx:1.25
@@ -86,7 +82,6 @@ services:
 
 
 volumes:
-  postgres_data:
   static_data:
   media_data:
   grafana_data:

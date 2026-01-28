@@ -4,7 +4,7 @@ function loadProfile() {
     const token = localStorage.getItem("access_token");
 
     if (!token) {
-        navigate("login");
+        navigate("/auth/login");
         return;
     }
 
@@ -16,7 +16,7 @@ function loadProfile() {
     .then(res => {
         if (res.status === 401) {
             localStorage.removeItem("access_token");
-            navigate("login");
+            navigate("/auth/login");
             throw new Error("Unauthorized");
         }
         return res.json();
@@ -60,7 +60,7 @@ function changePassword() {
         if (data.message) {
             // 🔐 Password change invalidates JWT
             localStorage.removeItem("access_token");
-            navigate("login");
+            navigate("/auth/login");
         }
     });
 }

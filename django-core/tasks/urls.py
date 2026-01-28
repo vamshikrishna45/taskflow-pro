@@ -1,34 +1,33 @@
 from django.urls import path
 from .views import (
-    TaskAssignView,
-    TaskCompleteView,
-    TaskCreateView,
-    TaskDeleteView,
-    TaskDescriptionEnhanceView,
     TaskListView,
+    TaskCreateView,
     TaskDetailView,
-    TaskPrioritySuggestView,
-    TaskStartView,
     TaskUpdateView,
+    TaskDeleteView,
+    TaskAssignView,
+    TaskStartView,
+    TaskCompleteView,
+    TaskPrioritySuggestView,
+    TaskDescriptionEnhanceView,
 )
 
 urlpatterns = [
-    path("tasks/", TaskListView.as_view()),
-    path("tasks/create/", TaskCreateView.as_view()),
-    path("tasks/<int:pk>/", TaskDetailView.as_view()),
-    path("tasks/<int:pk>/edit/", TaskUpdateView.as_view()),
+    # 📋 TASKS
+    path("v1/tasks/", TaskListView.as_view()),          # GET
+    path("v1/tasks/create/", TaskCreateView.as_view()), # POST
 
-    path("tasks/<int:pk>/assign/", TaskAssignView.as_view()),
-    path("tasks/<int:pk>/start/", TaskStartView.as_view()),
-    path("tasks/<int:pk>/complete/", TaskCompleteView.as_view()),
-    path("tasks/<int:pk>/delete/", TaskDeleteView.as_view()),
-    path("tasks/suggest-priority/", TaskPrioritySuggestView.as_view()),
+    # 🔍 TASK BY ID
+    path("v1/tasks/<int:pk>/", TaskDetailView.as_view()),        # GET
+    path("v1/tasks/<int:pk>/update/", TaskUpdateView.as_view()), # PATCH
+    path("v1/tasks/<int:pk>/delete/", TaskDeleteView.as_view()), # DELETE
 
-      path(
-        "tasks/enhance-description/",
-        TaskDescriptionEnhanceView.as_view()
-    ),
+    # ⚙️ TASK ACTIONS
+    path("v1/tasks/<int:pk>/assign/", TaskAssignView.as_view()),
+    path("v1/tasks/<int:pk>/start/", TaskStartView.as_view()),
+    path("v1/tasks/<int:pk>/complete/", TaskCompleteView.as_view()),
 
-
+    # 🤖 AI HELPERS
+    path("v1/tasks/suggest-priority/", TaskPrioritySuggestView.as_view()),
+    path("v1/tasks/enhance-description/", TaskDescriptionEnhanceView.as_view()),
 ]
-

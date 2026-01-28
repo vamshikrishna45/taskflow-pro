@@ -83,6 +83,7 @@ CELERY_TASK_SERIALIZER = env("CELERY_TASK_SERIALIZER")
 # Application definition
 
 INSTALLED_APPS = [
+        "corsheaders",
      'users',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -105,6 +106,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+        "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -248,3 +250,14 @@ else:
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
+
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://172.24.176.1:3000",  # Your WSL IP
+
+]
+
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False

@@ -10,7 +10,7 @@ function loadDashboard() {
     const token = localStorage.getItem("access_token");
 
     if (!token) {
-        navigate("login");
+        navigate("/auth/login");
         return;
     }
 
@@ -26,7 +26,7 @@ function loadDashboard() {
         if (!res.ok) {
             if (res.status === 401) {
                 localStorage.removeItem("access_token");
-                navigate("login");
+                navigate("/auth/login");
             }
             throw new Error("Dashboard API failed");
         }
